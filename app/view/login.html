@@ -1,0 +1,71 @@
+<section id="content" class="m-t-lg wrapper-md animated fadeInUp">
+	<div class="container aside-xl"><a class="navbar-brand block" href="index.html">Project Name</a>
+		<section class="m-b-lg">
+			<header class="wrapper text-center"><strong>Sign in to get in touch</strong></header>
+			<form action="index_submit">
+				<div class="list-group">
+					<div class="list-group-item">
+						<input name="user_name" placeholder="Username" class="form-control no-border" required>
+					</div>
+					<div class="list-group-item">
+						<input name="user_password" type="password" placeholder="Password" class="form-control no-border" required>
+					</div>
+				</div>
+				<button type="submit" class="btn btn-lg btn-primary btn-block">Sign in</button>
+				<div class="text-center m-t m-b" style="color:crimson">&nbsp</div>
+				<!--<div class="text-center m-t m-b"><a href="#"><small>Forgot password?</small></a></div>-->
+				<div class="line line-dashed"></div>
+				<!--<p class="text-muted text-center"><small>Do not have an account?</small></p>
+				<a href="signup.html" class="btn btn-lg btn-default btn-block">Create an account</a>-->
+			</form>
+		</section>
+	</div>
+</section>
+<!-- footer -->
+<footer id="footer">
+	<div class="text-center padder">
+		<p>
+			<small>Web app framework base on Bootstrap<br>
+				&copy; 2013
+			</small>
+		</p>
+	</div>
+</footer>
+<!-- / footer -->
+<!-- Bootstrap -->
+<!-- App -->
+<script src="./res/js/app.v1.js"></script>
+<script src="./res/js/app.plugin.js"></script>
+<script>
+	$('form').submit(function (event) {
+		event.preventDefault();
+		$.ajax({
+			type    : "POST",
+			url     : xycApp.initial.account.url + "account/signin",
+			data    : $('form').serialize(),
+			dataType: "json",
+			success : function (data) {
+				if (data.length > 0) {
+					localStorage.setItem('ca', data[0].sid);
+					xycApp.config.initDoLogin(localStorage.getItem('ca'), function (param, tag) {
+						window.document.title = "· Scale | Application";
+						xycApp.config.initView("nav.html", function (plain) {
+							$(plain).appendTo("section.hbox > aside#nav > section.vbox");
+						});
+						xycApp.config.initView("content.html", function (plain) {
+							$(plain).appendTo("section#scale-main-content");
+						});
+						xycApp.config.initView("livefeed.html", function (plain) {
+							$(plain).appendTo("aside#sidebar");
+						});
+						xycApp.config.initView("north.html", function (plain) {
+							$(plain).prependTo("section#scale-parent");
+						});
+					});
+				} else {
+					$('form div.text-center.m-t.m-b').html('<small>Incorrect account has come</small>')
+				}
+			}
+		});
+	});
+</script>

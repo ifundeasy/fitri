@@ -1,0 +1,45 @@
+{
+  "name": "Framework v3",
+  "version": "0.1.0",
+  "description": "Cloud Application",
+  "main": "index.html",
+	"authors": [
+		"SFN <syaefudin@xyclus.com>"
+	],
+  "keywords": [
+    "PT. XYCLUS CIPTA TEKNOLOGI",
+    "XYC",
+    "Xyclus",
+    "Cloud",
+    "Application",
+    "Cloud Application",
+    "Web Development",
+    "Koding",
+    "Coding",
+    "Responsive",
+    "Realtime services",
+    "Lightweight"
+  ],
+  "license": "LGPL v3",
+  "homepage": "rappresent.kd.io",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "*",
+    "backbone": "*",
+    "underscore": "*",
+    "canjs": "*",
+    "canjs-localstorage": "*",
+    "labjs": "*",
+    "eventemitter2": "*",
+    "webix": "1.5",
+    "jquery-touchswipe": "*",
+    "multilevelpushmenu": "*"
+  }
+}
