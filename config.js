@@ -70,40 +70,6 @@ z.prototype.initView = function (url, callback) {
 
 /**
  *
- * @param string : sid session localStorage.getItem('ca')
- * @param callback : your custom function { arguments[ {@param:string}, {tag} ]}
- */
-z.prototype.initDoLogin = function (string, callback) { //init this to error :D
-	var me = this;
-	tag = '<section class="vbox" id="scale-parent">' +
-		'<section>' +
-		'<section class="hbox stretch">' +
-		'<aside class="bg-black aside-md hidden-print" id="nav">' +
-		'<section class="vbox"></section>' +
-		'</aside>' +
-		'<section id="content">' +
-		'<section class="hbox stretch">' +
-		'<section id="scale-main-content"></section>' +
-		'<aside class="aside-md bg-black hide" id="sidebar"></aside>' +
-		'</section>' +
-		'<a href="#" class="hide nav-off-screen-block" data-toggle="class:nav-off-screen" data-target="#nav"></a>' +
-		'</section>' +
-		'</section>' +
-		'</section>' +
-		'</section>';
-	$('body').html('');
-	$(tag).appendTo('body');
-	if (localStorage.getItem('ca')) {
-		string = localStorage.getItem('ca');
-		me.initSession(localStorage.getItem('ca'), function (response) {
-			xycApp.initial.session.now = response;
-			return callback(string, tag);
-		});
-	}
-};
-
-/**
- *
  * @param type : string ['model', 'store', 'ctrl']
  * @param url : xycApp.config.base + ['model', 'store', 'ctrl'] + yourfile
  * @param id : your string id
@@ -225,8 +191,8 @@ z.prototype.initSession = function (string, callback) {
 			withCredentials: true
 		},
 		contentType: 'application/json',
-		success: function(responseText){
-			callback(responseText.data);
+		success: function(response){
+			callback(response);
 		}
 	});
 
@@ -245,11 +211,80 @@ z.prototype.initRemoveSession = function (callback) {
 };
 
 /**
+ * Force show login when false on checking session [z.prototype.initLogged()]
+ * @param callback : your custom function
+ */
+z.prototype.initShowLogin = function (callback) {
+	var me = this;
+	xycApp.initial.session.now = "undefined";
+	me.initRemoveSession(function(){
+		$('body').html('');
+		me.initView("login.html", function(plain){
+			$(plain).appendTo("body");
+		});
+		window.document.title = "· Scale | Login";
+	});
+};
+
+/**
+ * <body></body> : is empty.. you must fill it with your parent container
+ * @param callback
+ */
+z.prototype.parenttags = function (callback) {
+	$('body').html('');
+	tags =
+		'<section class="vbox" id="scale-parent">' +
+		'<section>' +
+		'<section class="hbox stretch">' +
+		'<aside class="bg-black aside-md hidden-print" id="nav">' +
+		'<section class="vbox"></section>' +
+		'</aside>' +
+		'<section id="content">' +
+		'<section class="hbox stretch">' +
+		'<section id="scale-main-content"></section>' +
+		'<aside class="aside-md bg-black hide" id="sidebar"></aside>' +
+		'</section>' +
+		'<a href="#" class="hide nav-off-screen-block" data-toggle="class:nav-off-screen" data-target="#nav"></a>' +
+		'</section>' +
+		'</section>' +
+		'</section>' +
+		'</section>';
+
+	$(tags).appendTo('body');
+	callback(tags);
+};
+
+/**
+ * Checking session..
+ * @param string : sid session localStorage.getItem('ca')
+ * @param callback : your custom function { arguments[ {@param:string}, {tag} ]}
+ */
+z.prototype.initLogged = function (string, callback) { //init this to error :D
+	var me = this;
+	if (string) {
+		console.log('on checking session.. please wait..'); //loader here...
+		me.initSession(string, function (response) {
+			console.log(response);
+			if (response.success == true) {
+				me.parenttags(function (tags) {
+					xycApp.initial.session.now = response;
+					return callback(string, tags);
+				})
+			} else {
+				me.initShowLogin();
+			}
+		});
+	} else {
+		me.initShowLogin();
+	}
+};
+
+/**
  * initialize all function
  */
 z.prototype.init = function () {
 	var me = this;
-	me.initBase();
+	me.initBase(); //initial first for default base path
 };
 
 /**

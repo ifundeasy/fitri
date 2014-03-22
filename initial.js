@@ -7,6 +7,7 @@ xycApp.initial = {
 	"account"  : {
 		"database": "cabe02ce11dj0894",
 		"hostname": "http://api.spamlovers.com/",
+		"signin"  : "http://api.spamlovers.com/api/22897478495895555/22897478495895557/cabe02ce11dj0754/cabe02ce11dj0894/account/signin",
 		"url"     : "http://api.spamlovers.com/api/22897478495895555/22897478495895557/cabe02ce11dj0754/cabe02ce11dj0894/"
 	},
 	"data"     : {

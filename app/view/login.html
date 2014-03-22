@@ -41,13 +41,13 @@
 		event.preventDefault();
 		$.ajax({
 			type    : "POST",
-			url     : xycApp.initial.account.url + "account/signin",
+			url     : xycApp.initial.account.signin,
 			data    : $('form').serialize(),
 			dataType: "json",
 			success : function (data) {
 				if (data.length > 0) {
 					localStorage.setItem('ca', data[0].sid);
-					xycApp.config.initDoLogin(localStorage.getItem('ca'), function (param, tag) {
+					xycApp.config.initLogged(localStorage.getItem('ca'), function (param, tag) {
 						window.document.title = "· Scale | Application";
 						xycApp.config.initView("nav.html", function (plain) {
 							$(plain).appendTo("section.hbox > aside#nav > section.vbox");
