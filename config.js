@@ -180,7 +180,7 @@ z.prototype.initModule = function (target, object, namespace) {
 /**
  *
  * @param string : sid <= localStorage.getItem('ca')
- * @param callback : custom user function for callback
+ * @param callback : your custom function
  */
 z.prototype.initSession = function (string, callback) {
 	$.ajax({
@@ -199,13 +199,14 @@ z.prototype.initSession = function (string, callback) {
 };
 /**
  *
- * @param callback : custom user function for callback
+ * @param callback : your custom function
  * @returns {*}
  */
 z.prototype.initRemoveSession = function (callback) {
+	xycApp.initial.session.now = "undefined";
+
 	try {
 		delete localStorage.getItem('ca');
-		xycApp.initial.session.now = "undefined";
 	} catch (e) {}
 	return callback()
 };
@@ -216,7 +217,6 @@ z.prototype.initRemoveSession = function (callback) {
  */
 z.prototype.initShowLogin = function (callback) {
 	var me = this;
-	xycApp.initial.session.now = "undefined";
 	me.initRemoveSession(function(){
 		$('body').html('');
 		me.initView("login.html", function(plain){
