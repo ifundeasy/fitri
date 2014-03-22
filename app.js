@@ -1,7 +1,6 @@
 //xycApp.config.initBase('./application'); //if your folder is application
 
 xycApp.config.initLogged(localStorage.getItem('ca'), function (string, parenttag) {
-	console.log(string);
 	window.document.title = "· Scale | Application";
 	xycApp.config.initView("nav.html", function(plain){
 		$(plain).appendTo("section.hbox > aside#nav > section.vbox");
