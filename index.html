@@ -17,25 +17,24 @@
 	<!-- library -->
 	<script src="./bower/labjs-edited/LAB.min.js" type="text/javascript"></script>
 	<script>
-		(function(){
+		(function () {
 			bower = './bower/';
 			$xycEnvironment = 'browser';
 			$LAB.setOptions({AlwaysPreserveOrder: true})
 				.script(bower + 'jquery/dist/jquery.min.js')
 				.script({
-					src: bower + 'canjs/can.jquery.min.js',
+					src : bower + 'canjs/can.jquery.min.js',
 					type: 'text/javascript'
-				}).wait(function(){
-					$LAB.setOptions({AlwaysPreserveOrder: false})
+				})
+				.wait(function () {
+					$LAB.setOptions({AlwaysPreserveOrder: true})
 						.script('./xyc.js')
 						.script('./initial.js')
+						.script('./ip.js')
 						.script('./config.js')
 						.script('./app.js');
-
-					xycApp.config.initView('application.html', function () {
-						$(arguments[0]).prependTo("body");
-					})
 				})
+				.script(bower + 'async/lib/async.js')
 		}());
 	</script>
 </head>

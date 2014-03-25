@@ -103,6 +103,7 @@ z.prototype.initScript = function (type, url, id) {
 			break;
 	}
 };
+
 /**
  *
  * @param target : string selector [#id, .class, tag] <= for view only
@@ -119,13 +120,13 @@ z.prototype.initModule = function (target, object, namespace) {
 			switch (keys) {
 				case 'model' :
 					if ((Array.isArray(value) == true) && (value.length > 0))
-					Array.each(value, function(arr, idx){
-						return $LAB.script({
-							id  : id+'-'+idx,
-							src : me.model + arr,
-							type: 'text/javascript'
+						Array.each(value, function(arr, idx){
+							return $LAB.script({
+								id  : id+'-'+idx,
+								src : me.model + arr,
+								type: 'text/javascript'
+							});
 						});
-					});
 					break;
 				case 'store' :
 					if ((Array.isArray(value) == true) && (value.length > 0))
@@ -149,26 +150,26 @@ z.prototype.initModule = function (target, object, namespace) {
 					break;
 				case 'view' :
 					if ((Array.isArray(value) == true) && (value.length > 0))
-					Array.each(value, function(arr, idx){
-						$.ajax({
-							url        : me.view + arr,
-							method     : 'GET',
-							cache      : false,
-							//async      : false,
-							cors       : true,
-							xhrFields  : {
-								withCredentials: true
-							},
-							crossDomain: true,
-							dataType: 'html',
-							success    : function (data, status, xhr) {
-								$(target).html('');
-								$(data).prependTo(target);
-							}
-						}).fail(function(){
-							console.log('fail to load : ', me.view + arr)
+						Array.each(value, function(arr, idx){
+							$.ajax({
+								url        : me.view + arr,
+								method     : 'GET',
+								cache      : false,
+								//async      : false,
+								cors       : true,
+								xhrFields  : {
+									withCredentials: true
+								},
+								crossDomain: true,
+								dataType: 'html',
+								success    : function (data, status, xhr) {
+									$(target).html('');
+									$(data).prependTo(target);
+								}
+							}).fail(function(){
+								console.log('fail to load : ', me.view + arr)
+							});
 						});
-					});
 					break;
 			}
 		})
@@ -197,13 +198,14 @@ z.prototype.initSession = function (string, callback) {
 	});
 
 };
+
 /**
  *
  * @param callback : your custom function
  * @returns {*}
  */
 z.prototype.initRemoveSession = function (callback) {
-	xycApp.initial.session.now = "undefined";
+	xycApp.initial.session.nodeNow = "undefined";
 
 	try {
 		delete localStorage.getItem('ca');
@@ -234,21 +236,21 @@ z.prototype.parenttags = function (callback) {
 	$('body').html('');
 	tags =
 		'<section class="vbox" id="scale-parent">' +
-		'<section>' +
-		'<section class="hbox stretch">' +
-		'<aside class="bg-black aside-md hidden-print" id="nav">' +
-		'<section class="vbox"></section>' +
-		'</aside>' +
-		'<section id="content">' +
-		'<section class="hbox stretch">' +
-		'<section id="scale-main-content"></section>' +
-		'<aside class="aside-md bg-black hide" id="sidebar"></aside>' +
-		'</section>' +
-		'<a href="#" class="hide nav-off-screen-block" data-toggle="class:nav-off-screen" data-target="#nav"></a>' +
-		'</section>' +
-		'</section>' +
-		'</section>' +
-		'</section>';
+			'<section>' +
+			'<section class="hbox stretch">' +
+			'<aside class="bg-black aside-md hidden-print" id="nav">' +
+			'<section class="vbox"></section>' +
+			'</aside>' +
+			'<section id="content">' +
+			'<section class="hbox stretch">' +
+			'<section id="scale-main-content"></section>' +
+			'<aside class="aside-md bg-black hide" id="sidebar"></aside>' +
+			'</section>' +
+			'<a href="#" class="hide nav-off-screen-block" data-toggle="class:nav-off-screen" data-target="#nav"></a>' +
+			'</section>' +
+			'</section>' +
+			'</section>' +
+			'</section>';
 
 	$(tags).appendTo('body');
 	callback(tags);
@@ -264,19 +266,79 @@ z.prototype.initLogged = function (string, callback) { //init this to error :D
 	if (string) {
 		console.log('on checking session.. please wait..'); //loader here...
 		me.initSession(string, function (response) {
-			console.log(response);
-			if (response.success == true) {
-				me.parenttags(function (tags) {
-					xycApp.initial.session.now = response;
-					return callback(string, tags);
-				})
-			} else {
-				me.initShowLogin();
+			nodeResponse = response.data;
+			yourIpAddress = "undefined";
+
+			/**
+			 * Checking IP Address
+			 */
+			xycApp.initial.session.ipinfodb.fn(function(data){
+				if (data != "undefined") {
+					yourIpAddress = data.ipAddress;
+					parameters = {
+						user_id : nodeResponse.user_id
+					};
+
+					//console.log(">> Basic Node :", nodeResponse);
+					me.getWithParam('checking_restrict', parameters, function(arguments1) {
+						xycApp.initial.session.restricted = arguments1 = arguments1[0];
+						//console.log(">> Restricted :", arguments1);
+						if (arguments1.restricted_ip === "1") {
+							me.getWithParam('checking_ip', parameters, function(arguments2) {
+								allowedIp = [];
+								xycApp.initial.session.allowed_ip = arguments2;
+								Array.each(arguments2, function(array, i){
+									allowedIp.push(array.public_ip);
+								});
+								console.log(">> Allowed IP :", allowedIp);
+								console.log(">> Your IP :", yourIpAddress);
+								if (xyc.Array.contains(allowedIp, yourIpAddress) == true) {
+									defaults();
+								} else {
+									alert ('Sorry.. You are in restricted area..')
+								}
+							});
+						} else {
+							defaults();
+						}
+					});
+				}
+			});
+
+			function defaults() {
+				if (response.success == true) {
+					me.parenttags(function (tags) {
+						xycApp.initial.session.nodeNow = response.data;
+						return callback(string, tags);
+					})
+				} else {
+					me.initShowLogin();
+				}
 			}
+
 		});
 	} else {
 		me.initShowLogin();
 	}
+};
+
+/**
+ *
+ * @param customAPI : CustomAPI : sr-script-route (caserver)
+ * @param object : The Param that you used into this API
+ * @param callback : Custom Funtion { arguments[ object response.data ] }
+ */
+z.prototype.getWithParam = function (customAPI, object, callback) {
+	$.get(xycApp.initial.custom.url + customAPI, object, function(response) {
+			if ((response.success == true) && (response.data.length > 0)) {
+				typeof callback == 'function' ? callback = callback(response.data) : callback = response.data;
+				return callback
+			} else {
+				console.log(">> initCustomCheck : You aren't fail, just needed to re-checking the parameters that you used into")
+			}
+		}).fail(function(){
+			console.log('>> initCustomCheck : FAIL TO LOAD URL API!!')
+		});
 };
 
 /**

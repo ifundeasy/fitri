@@ -1,3 +1,18 @@
+<script>
+	var identity = xycApp.initial.session.identity;
+	var account;
+	identity.member == "undefined" ? account = identity.internal : account = identity.member; //make sure logged as internal
+	account = account[0];
+	$('a.navbar-brand')
+		.html('<img src="./res/images/logo.png" class="m-r-sm">'+account.xc_name);
+	$('a.dropdown-toggle[data-toggle="dropdown"] > span.thumb-sm.avatar.pull-left').parent()
+		.html('<span class="thumb-sm avatar pull-left"> <img src="./res/images/a0.jpg"></span>'+xycApp.initial.session.nodeNow.real_name+'<b class="caret"></b>');
+	$('strong.font-bold.text-lt')
+		.html(xycApp.initial.session.nodeNow.real_name);
+	$('span.text-muted.text-xs.block').html(account.int_group_name)
+
+</script>
+
 <!-- north -->
 <header class="bg-white header header-md navbar navbar-fixed-top-xs box-shadow" id="scale-north">
 	<div class="navbar-header aside-md dk"><a class="btn btn-link visible-xs" data-toggle="class:nav-off-screen" data-target="#nav"> <i class="fa fa-bars"></i>

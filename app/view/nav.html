@@ -1,3 +1,13 @@
+<script>
+	var identity = xycApp.initial.session.identity;
+	var account;
+	identity.member == "undefined" ? account = identity.internal : account = identity.member; //make sure logged as internal
+	account = account[0];
+	$('strong.font-bold.text-lt')
+		.html(xycApp.initial.session.nodeNow.real_name);
+	$('span.text-muted.text-xs.block').html(account.int_group_name)
+</script>
+
 <section class="w-f scrollable">
 	<div class="slim-scroll" data-height="auto" data-disable-fade-out="true" data-distance="0" data-size="10px" data-color="#333333">
 		<div class="clearfix wrapper dk nav-user hidden-xs">

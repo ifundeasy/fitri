@@ -20,7 +20,16 @@ xycApp.initial = {
 		"url"     : "http://api.spamlovers.com/api/custom/22897478495895555/22897478495895557/cabe02ce11dj0754/"
 	},
 	"session"  : {
-		"now": "undefined",
-		"url": "http://api.spamlovers.com/api/account/me?casid="
+		"nodeNow"          : "undefined",
+		"ipinfodb"         : "undefined",
+		"restricted"       : "undefined",
+		"allowed_ip"       : "undefined",
+		"identity"         : {
+			"internal": "undefined",
+			"member"  : "undefined",
+			"supplier": "undefined"
+		},
+		"modules"          : "undefined",
+		"url"              : "http://api.spamlovers.com/api/account/me?casid="
 	}
 }
